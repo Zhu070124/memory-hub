@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  memory-hub:
+    build: .
+    container_name: memory-hub
+    ports:
+      - "8921:8921"
+    volumes:
+      # Mount the SQLite database file as a volume for persistence
+      - ./data:/data
+    environment:
+      - DB_PATH=/data/insights.db
+      - LOG_PATH=/data/memory_hub.log
+    restart: unless-stopped

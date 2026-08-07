@@ -1,1 +1,10 @@
 __pycache__/
+*.db
+archive.jsonl
+hermes_sync_state.json
+
+.env
+
+*.pyc
+
+*.pyo
