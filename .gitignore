@@ -2,6 +2,7 @@ __pycache__/
 *.db
 archive.jsonl
 hermes_sync_state.json
+*.log
 
 .env
 
