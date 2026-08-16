@@ -19,6 +19,7 @@ import hmac
 import http.server
 import threading
 import logging
+import urllib.parse
 from pathlib import Path
 from datetime import datetime, timedelta
 
@@ -253,10 +254,12 @@ def _resolve_conflict(new_conf, new_ts, existing):
 
 def _do_add(db, content, source, lens, priority, confidence, tags, now):
     """Raw INSERT helper -- caller manages db + commit/rollback."""
+    # tags 列是 TEXT，list 需序列化为 JSON 字符串才能绑定
+    tags_json = json.dumps(tags) if tags else None
     db.execute(
         "INSERT INTO insights (content, source, lens, priority, confidence, "
         "tags, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-        (content, source, lens, priority, confidence, tags, now, now),
+        (content, source, lens, priority, confidence, tags_json, now, now),
     )
     fid = db.execute("SELECT last_insert_rowid()").fetchone()[0]
     return fid
@@ -710,7 +713,7 @@ def serve_http(port=8921):
                 for kv in self.path.split("?")[1].split("&"):
                     if "=" in kv:
                         k, v = kv.split("=", 1)
-                        params[k] = v
+                        params[k] = urllib.parse.unquote(v)
 
             if path == "/profile":
                 try:

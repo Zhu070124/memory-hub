@@ -9,3 +9,4 @@ hermes_sync_state.json
 *.pyc
 
 *.pyo
+*.db-*
